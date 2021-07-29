@@ -1,11 +1,18 @@
 # Beacon
 Beacon is a machine learning framework built on top of PyTorch.
 
-## utils
-utils contains utilities such as save load PyTorch checkpoints, load latest checkpoints, time counters, etc.
+## Requirements
 
-## nets
-nets contains a base class for neural network training that encapsulates automatic model loading/saving.
+- [pyTorch 1.1+]: pytorch is not automatically installed when you install beacon due to hardware differences, etc. Please see latest installation instructions on [pytorch.org][1]
+
+
+## Installation
+
+After the above requirements are installed, you can install tk3dv like so:
+
+`pip install git+https://github.com/brown-ivl/beacon.git`
+
+If reinstalling, make sure to uninstall and repeat the install (required on some systems).
 
 ## Sample
 Run the following code for a minimal MNIST example that uses utils.
@@ -19,6 +26,7 @@ Testing:
 
 # Contact
 Srinath Sridhar  
-[srinaths@umich.edu][1]
+[srinaths@umich.edu][2]
 
-[1]: [mailto:srinaths@umich.edu]
+[1]: https://pytorch.org/
+[2]: [mailto:srinaths@umich.edu]

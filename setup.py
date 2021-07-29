@@ -23,8 +23,8 @@ VERSION = '0.2'
 # What packages are required for this module to be executed?
 REQUIRED = [
     'beacon',
-    'torch>=1.2', # Problems installing torch via pip on Windows, so install manually at https://pytorch.org/
-    'torchvision>=0.2.2', 'opencv-python>=3.2.0.8', 'palettable>=3.1.1', 'requests>=2.21.0'
+    #'torch>=1.2', 'torchvision>=0.2.2' # Problems installing torch via pip on Windows, so install manually at https://pytorch.org/
+    'opencv-python>=3.2.0.8', 'palettable>=3.1.1', 'requests>=2.21.0', 'matplotlib', 'gputil'
 ]
 
 # What packages are optional?
