@@ -8,7 +8,7 @@ Beacon is a machine learning framework built on top of PyTorch.
 
 ## Installation
 
-After the above requirements are installed, you can install tk3dv like so:
+After the above requirements are installed, you can install beacon like so:
 
 `pip install git+https://github.com/brown-ivl/beacon.git`
 
