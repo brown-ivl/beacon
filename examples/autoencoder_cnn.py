@@ -32,7 +32,7 @@ def infer(Args, TestData, Net, TestDevice):
         plt.pause(1)
 
 
-Parser = argparse.ArgumentParser(description='Sample code that uses the ptTools framework for training a simple '
+Parser = argparse.ArgumentParser(description='Sample code that uses the beacon framework for training a simple '
                                              'autoencoder on MNIST.')
 Parser.add_argument('--arch', help='Architecture to use.', choices=['SimpleCNN', 'SegNet'], default='SimpleCNN')
 InputGroup = Parser.add_mutually_exclusive_group()
