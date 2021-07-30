@@ -1,18 +1,15 @@
 import torch
-import torchvision
 import torch.nn as nn
 import torch.nn.functional as F
-import torch.optim as optim
-import os, sys, argparse, math
-import numpy as np
+import os
+import sys
 
 FileDirPath = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.join(FileDirPath, '..'))
 
-import utils
-import nets
+from beacon import supernet
 
-class SimpleCAE(nets.network):
+class SimpleCAE(supernet.SuperNet):
     def __init__(self, Args=None, DataParallelDevs=None):
         super().__init__(Args=Args)
         self.encoder = nn.Sequential(
@@ -37,10 +34,11 @@ class SimpleCAE(nets.network):
         x = self.decoder(x)
         return x
 
+
 class FCBottleNeck(nn.Module): # Just a fully connected bottleneck layer
     def __init__(self, InFeatureSize):
         super().__init__()
-        self.FC1 = nn.Linear(InFeatureSize, 2048) # TODO: figure out sizes
+        self.FC1 = nn.Linear(InFeatureSize, 2048)  # TODO: figure out sizes
         self.FC2 = nn.Linear(2048, 2048)
         self.FC3 = nn.Linear(2048, InFeatureSize)
 
@@ -52,7 +50,8 @@ class FCBottleNeck(nn.Module): # Just a fully connected bottleneck layer
 
         return x_pe
 
-class DeepCAE(nets.network):
+
+class DeepCAE(supernet.SuperNet):
     def __init__(self, Args=None, DataParallelDevs=None, InputChannels=1):
         super().__init__(Args)
         self.encoder = self.Encoder(InputChannels=InputChannels)
@@ -102,7 +101,6 @@ class DeepCAE(nets.network):
             batch_size = x.shape[0]
             out = out.view(batch_size, -1)
             return out
-
 
     class Decoder(nn.Module):
         def __init__(self, OutputChannels=1):

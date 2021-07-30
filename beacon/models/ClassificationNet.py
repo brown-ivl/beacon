@@ -12,7 +12,7 @@ sys.path.append(os.path.join(FileDirPath, '..'))
 import utils
 import nets
 
-class SimpleClassNet(nets.network):
+class SimpleClassNet(nets.SuperNet):
     def __init__(self):
         super().__init__()
         self.conv1 = nn.Conv2d(1, 20, 5, 1)

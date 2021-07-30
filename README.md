@@ -8,25 +8,25 @@ Beacon is a machine learning framework built on top of PyTorch.
 
 ## Installation
 
-After the above requirements are installed, you can install beacon like so:
+After installing the above requirements, you can install beacon like so:
 
 `pip install git+https://github.com/brown-ivl/beacon.git`
 
-If reinstalling, make sure to uninstall and repeat the install (required on some systems).
+If reinstalling, make sure to uninstall beacon before running the command (required on some systems).
 
 ## Sample
-Run the following code for a minimal MNIST example that uses utils.
+Run the following code for a minimal MNIST example classification example using an MLP.
 
 Training:  
-`python examples/MNIST.py --mode train --expt-name MNISTTest --input-dir <DIR_TO_DATA> --output-dir <OUTPUT_DIR>`
+`python examples/classification_mlp.py --mode train --expt-name MNISTTest --input-dir <DIR_TO_DATA> --output-dir <OUTPUT_DIR>`
 
 
 Testing:  
-`python examples/MNIST.py --mode test --expt-name MNISTTest --input-dir <DIR_TO_DATA> --output-dir <OUTPUT_DIR>`
+`python examples/classification_mlp.py --mode infer --expt-name MNISTTest --input-dir <DIR_TO_DATA> --output-dir <OUTPUT_DIR>`
 
 # Contact
 Srinath Sridhar  
-[srinaths@umich.edu][2]
+[srinath@brown.edu][2]
 
 [1]: https://pytorch.org/
-[2]: [mailto:srinaths@umich.edu]
+[2]: [mailto:srinath@brown.edu]

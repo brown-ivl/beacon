@@ -4,14 +4,10 @@ from torchvision import transforms
 from torchvision.datasets import MNIST
 import matplotlib.pyplot as plt
 
-import sys, os, argparse
+import sys
+import argparse
 
-FileDirPath = os.path.dirname(os.path.realpath(__file__))
-sys.path.append(os.path.join(FileDirPath, '../models'))
-sys.path.append(os.path.join(FileDirPath, '..'))
-
-import utils, nets
-import CAE
+from beacon.models import CAE, SegNet
 
 # Make both input and target be the same
 class MNISTSpecialDataset(MNIST):
@@ -19,7 +15,8 @@ class MNISTSpecialDataset(MNIST):
         Image, Label = super().__getitem__(idx)
         return Image, Image
 
-def test(Args, TestData, Net, TestDevice):
+
+def infer(Args, TestData, Net, TestDevice):
     TestNet = Net.to(TestDevice)
     nSamples = min(Args.test_samples, len(TestData))
     print('[ INFO ]: Testing on', nSamples, 'samples')
@@ -35,9 +32,10 @@ def test(Args, TestData, Net, TestDevice):
         plt.pause(1)
 
 
-Parser = argparse.ArgumentParser(description='Sample code that uses the ptTools framework for training a simple autoencoder on MNIST.')
+Parser = argparse.ArgumentParser(description='Sample code that uses the ptTools framework for training a simple '
+                                             'autoencoder on MNIST.')
 InputGroup = Parser.add_mutually_exclusive_group()
-InputGroup.add_argument('--mode', help='Operation mode.', choices=['train', 'test'])
+InputGroup.add_argument('--mode', help='Operation mode.', choices=['train', 'infer'])
 InputGroup.add_argument('--test-samples', help='Number of samples to use during testing.', default=30, type=int)
 
 MNISTCAETrans = transforms.Compose([
@@ -51,10 +49,11 @@ if __name__ == '__main__':
         Parser.print_help()
         exit()
 
-    if Args.mode == 'train':
-        SampleNet = CAE.SimpleCAE()
-        print(SampleNet)
+    # SampleNet = CAE.SimpleCAE()
+    SampleNet = SegNet.SegNet()
+    print(SampleNet)
 
+    if Args.mode == 'train':
         TrainDevice = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
         TrainData = MNISTSpecialDataset(root=SampleNet.Config.Args.input_dir, train=True, download=True, transform=MNISTCAETrans)
         print('[ INFO ]: Data has', len(TrainData), 'samples.')
@@ -62,13 +61,11 @@ if __name__ == '__main__':
 
         # Train
         SampleNet.fit(TrainDataLoader, Objective=nn.MSELoss(), TrainDevice=TrainDevice)
-    elif Args.mode == 'test':
-        SampleNet = CAE.SimpleCAE()
+    elif Args.mode == 'infer':
         SampleNet.loadCheckpoint()
-        print(SampleNet)
 
         TestDevice = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
         TestData = MNISTSpecialDataset(root=SampleNet.Config.Args.input_dir, train=False, download=True, transform=MNISTCAETrans)
         print('[ INFO ]: Data has', len(TestData), 'samples.')
 
-        test(Args, TestData, SampleNet, TestDevice)
+        infer(Args, TestData, SampleNet, TestDevice)

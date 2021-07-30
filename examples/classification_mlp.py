@@ -1,20 +1,15 @@
 import torch
 from torch import nn
-from torch.utils.data import DataLoader
 from torchvision import transforms
 from torchvision.datasets import MNIST
-import numpy as np
 import matplotlib.pyplot as plt
 
-import sys, os, argparse
+import sys
+import argparse
 
-FileDirPath = os.path.dirname(os.path.realpath(__file__))
-sys.path.append(os.path.join(FileDirPath, '../models'))
-sys.path.append(os.path.join(FileDirPath, '..'))
+from beacon.models import ClassificationNet
 
-import ClassificationNet
-
-def test(Args, TestData, Net, TestDevice):
+def infer(Args, TestData, Net, TestDevice):
     TestNet = Net.to(TestDevice)
     nSamples = min(Args.test_samples, len(TestData))
     print('[ INFO ]: Testing on', nSamples, 'samples')
@@ -25,12 +20,14 @@ def test(Args, TestData, Net, TestDevice):
         Image = Image.to(TestDevice)
         PredLabel = TestNet(Image.unsqueeze_(0)).to('cpu').argmax().item()
         plt.imshow(Image.to('cpu').numpy().squeeze(), cmap='gray')
-        plt.xlabel(('GT: {}; Pred: {}').format(GTLabel, PredLabel))
+        plt.xlabel('GT: {}; Pred: {}'.format(GTLabel, PredLabel))
         plt.pause(1)
 
-Parser = argparse.ArgumentParser(description='Sample code that uses the ptTools framework for training a simple MNIST classification task.')
+
+Parser = argparse.ArgumentParser(description='Sample code that uses the beacon framework for training a simple MNIST '
+                                             'classification task.')
 InputGroup = Parser.add_mutually_exclusive_group()
-InputGroup.add_argument('--mode', help='Operation mode.', choices=['train', 'test'])
+InputGroup.add_argument('--mode', help='Operation mode.', choices=['train', 'infer'])
 InputGroup.add_argument('--test-samples', help='Number of samples to use during testing.', default=30, type=int)
 
 MNISTClassTrans = transforms.Compose([
@@ -60,7 +57,7 @@ if __name__ == '__main__':
 
         # Train
         SampleNet.fit(TrainDataLoader, Objective=nn.NLLLoss(), TrainDevice=TrainDevice)
-    elif Args.mode == 'test':
+    elif Args.mode == 'infer':
         SampleNet = ClassificationNet.SimpleClassNet()
         SampleNet.loadCheckpoint()
         print(SampleNet)
@@ -69,4 +66,4 @@ if __name__ == '__main__':
         TestData = MNIST(root=SampleNet.Config.Args.input_dir, train=False, download=True, transform=MNISTClassTrans)
         print('[ INFO ]: Data has', len(TestData), 'samples.')
 
-        test(Args, TestData, SampleNet, TestDevice)
+        infer(Args, TestData, SampleNet, TestDevice)

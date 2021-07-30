@@ -16,7 +16,7 @@ from modules import UNet_ConvBlock, UNet_DownBlock, UNet_UpBlock
 # Implemented as in the original paper with added batchnorm and relu
 # Good tutorial: https://tuatini.me/practical-image-segmentation-with-unet/
 
-class UNet(nets.network):
+class UNet(nets.SuperNet):
     def __init__(self, in_shape, Args=None, DataParallelDevs=None):
         super().__init__(Args)
 

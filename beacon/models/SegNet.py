@@ -1,11 +1,12 @@
 # Borrowed from https://github.com/meetshah1995/pytorch-semseg
 import torch.nn as nn
-import os, sys
+import os
+import sys
 
 FileDirPath = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.join(FileDirPath, '..'))
-from tk3dv.ptTools import ptUtils
-from tk3dv.ptTools import ptNets
+from beacon import utils
+from beacon import supernet
 
 sys.path.append(os.path.join(FileDirPath, '.'))
 from modules import segnetDown2, segnetDown3, segnetUp2, segnetUp3
@@ -14,7 +15,7 @@ import torchvision.models as models
 import numpy as np
 import torch 
 
-class SegNet(ptNets.network):
+class SegNet(supernet.SuperNet):
     def __init__(self, n_classes=4, in_channels=3, is_unpooling=True, Args=None, DataParallelDevs=None, pretrained=True, withSkipConnections=False):
         super().__init__(Args)
 

@@ -29,7 +29,8 @@ class netMSELoss(nn.Module):
         loss = torch.mean((output - target) ** 2)
         return loss
 
-class netLoss(nn.Module):
+
+class SuperLoss(nn.Module):
     def __init__(self, Losses=[], Weights=[], Names=[]):
         super().__init__()
         if not Losses: # empty list
@@ -38,7 +39,7 @@ class netLoss(nn.Module):
             self.Names = ['Default MSE Loss']
         else:
             if len(Losses) != len(Weights):
-                raise RuntimeError('ptNetLoss() given Losses and Weights don''t match.')
+                raise RuntimeError('SuperLoss() given Losses and Weights don''t match.')
 
             self.Losses = Losses
             self.Weights = Weights
@@ -80,7 +81,8 @@ class netLoss(nn.Module):
 
         return TotalLossVal
 
-class netExptConfig():
+
+class SuperNetExptConfig():
     def __init__(self, InputArgs=None, isPrint=True):
         self.Parser = argparse.ArgumentParser(description='Parse arguments for a PyTorch neural network.', fromfile_prefix_chars='@')
 
@@ -153,11 +155,12 @@ class netExptConfig():
     def serialize(self, FilePath, isAppend=True):
         utils.configSerialize(self.Args, FilePath, isAppend)
 
-class network(nn.Module):
+
+class SuperNet(nn.Module):
     def __init__(self, Args=None):
         super().__init__()
 
-        self.Config = netExptConfig(InputArgs=Args)
+        self.Config = SuperNetExptConfig(InputArgs=Args)
 
         # Defaults
         self.StartEpoch = 0
@@ -243,8 +246,8 @@ class network(nn.Module):
             self.Optimizer = Optimizer
 
         ObjectiveFunc = Objective
-        if isinstance(ObjectiveFunc, netLoss) == False:
-            ObjectiveFunc = netLoss(Losses=[ObjectiveFunc], Weights=[1.0])  # Cast to ptNetLoss
+        if isinstance(ObjectiveFunc, SuperLoss) == False:
+            ObjectiveFunc = SuperLoss(Losses=[ObjectiveFunc], Weights=[1.0])  # Cast to SuperLoss
 
         self.setupCheckpoint(TrainDevice)
 
