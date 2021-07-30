@@ -1,22 +1,17 @@
 import torch
-import torchvision
 import torch.nn as nn
-import torch.nn.functional as F
-import torch.optim as optim
-import os, sys, argparse, math
-import numpy as np
+import os
+import sys
+from beacon import supernet
 
 FileDirPath = os.path.dirname(os.path.realpath(__file__))
-sys.path.append(os.path.join(FileDirPath, '..'))
-import utils, nets
-
 sys.path.append(os.path.join(FileDirPath, '.'))
 from modules import UNet_ConvBlock, UNet_DownBlock, UNet_UpBlock
 
 # Implemented as in the original paper with added batchnorm and relu
 # Good tutorial: https://tuatini.me/practical-image-segmentation-with-unet/
 
-class UNet(nets.SuperNet):
+class UNet(supernet.SuperNet):
     def __init__(self, in_shape, Args=None, DataParallelDevs=None):
         super().__init__(Args)
 
