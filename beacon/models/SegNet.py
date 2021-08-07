@@ -5,11 +5,14 @@ import torchvision.models as models
 import os
 import sys
 import numpy as np
-from beacon import supernet
 
 FileDirPath = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.join(FileDirPath, '.'))
 from modules import segnetDown2, segnetDown3, segnetUp2, segnetUp3
+
+sys.path.append(os.path.join(FileDirPath, '..'))
+import supernet
+import utils
 
 class SegNet(supernet.SuperNet):
     def __init__(self, n_classes=4, in_channels=3, is_unpooling=True, Args=None, DataParallelDevs=None, pretrained=True, withSkipConnections=False):
@@ -59,7 +62,7 @@ class SegNet(supernet.SuperNet):
         if self.isPretrained and C == 3:
             # Apply ImageNet batch normalization for input
             for b in range(B):
-                inputs[b] = ptUtils.normalizeInput(inputs[b], format='imagenet') # assuming input is the range 0-1
+                inputs[b] = utils.normalizeInput(inputs[b], format='imagenet') # assuming input is the range 0-1
         down1, indices_1, FM1 = self.down1(inputs)
         down2, indices_2, FM2 = self.down2(down1)
         down3, indices_3, FM3 = self.down3(down2)
