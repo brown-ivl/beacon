@@ -59,11 +59,12 @@ class SegNet(supernet.SuperNet):
 
     def forward(self, inputs):
         B, C, W, H = inputs.size()
+        Inputs = torch.copy(inputs)
         if self.isPretrained and C == 3:
             # Apply ImageNet batch normalization for input
             for b in range(B):
-                inputs[b] = utils.normalizeInput(inputs[b], format='imagenet') # assuming input is the range 0-1
-        down1, indices_1, FM1 = self.down1(inputs)
+                Inputs[b] = utils.normalizeInput(Inputs[b], format='imagenet') # assuming input is the range 0-1
+        down1, indices_1, FM1 = self.down1(Inputs)
         down2, indices_2, FM2 = self.down2(down1)
         down3, indices_3, FM3 = self.down3(down2)
         down4, indices_4, FM4 = self.down4(down3)
