@@ -106,6 +106,10 @@ class SuperNetExptConfig():
         self.Parser.add_argument('--save-freq', help='Choose epoch frequency to save checkpoints. Zero (0) will only at the end of training [not recommended].', choices=range(0, 10000), metavar='0..10000',
                             required=False, default=5, type=int)
 
+        # -----
+        self.Parser.add_argument('--no-save', help='Disable checkpoint saving after every epoch. CAUTION: Use this for debugging only.', action='store_true', required=False)
+        self.Parser.set_defaults(no_save=False)
+
         self.Args, _ = self.Parser.parse_known_args(InputArgs)
 
         if self.Args.expt_name is None:
@@ -312,7 +316,8 @@ class SuperNet(nn.Module):
                     CurrLegend = ['Train loss', 'Val loss', *ObjectiveFunc.Names]
 
                 # Always save checkpoint after an epoch. Will be replaced each epoch. This is independent of requested checkpointing
-                self.saveCheckpoint(Epoch, CurrLegend, TimeString='eot', PrintStr='~'*3)
+                if self.Config.Args.no_save == False:
+                    self.saveCheckpoint(Epoch, CurrLegend, TimeString='eot', PrintStr='~'*3)
 
                 isLastLoop = (Epoch == self.Config.Args.epochs-1) and (i == len(TrainDataLoader)-1)
                 if (Epoch + 1) % self.SaveFrequency == 0 or isTerminateEarly or isLastLoop:
@@ -347,8 +352,11 @@ class SuperNet(nn.Module):
         # ptUtils.saveLossesCurve(self.LossHistory, self.ValLossHistory, out_path=os.path.splitext(OutFilePath)[0] + '.png',
         #                         xlim = [0, int(self.Config.Args.epochs + self.StartEpoch)], legend=CurrLegend, title=self.Config.Args.expt_name)
         TSLH = list(map(list, zip(*self.SeparateLossesHistory))) # Transposed list
-        utils.saveLossesCurve(self.LossHistory, self.ValLossHistory, *TSLH, out_path=os.path.splitext(OutFilePath)[0] + '.png',
-                              xlim = [0, int(self.Config.Args.epochs + self.StartEpoch)], legend=CurrLegend, title=self.Config.Args.expt_name)
+        try:
+            utils.saveLossesCurve(self.LossHistory, self.ValLossHistory, *TSLH, out_path=os.path.splitext(OutFilePath)[0] + '.png',
+                                  xlim = [0, int(self.Config.Args.epochs + self.StartEpoch)], legend=CurrLegend, title=self.Config.Args.expt_name)
+        except Exception as e:
+            print('[ WARN ]: Failed to write loss curve. On some operating systems having the file open can cause write problems. Please close the file.')
 
         # print('[ INFO ]: Checkpoint saved.')
         print(PrintStr) # Checkpoint saved. 50 + 3 characters [>]
