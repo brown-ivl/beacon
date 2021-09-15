@@ -261,7 +261,14 @@ class UNet_ConvBlock(nn.Module):
     def __init__(self, in_channels, out_channels, kernel_size, stride=1, padding=0):
         super().__init__()
 
-        self.Conv = nn.Conv2d(in_channels, out_channels, kernel_size=kernel_size, stride=stride, padding=padding)
+        self.Conv = nn.Conv2d(
+            int(in_channels),
+            int(out_channels),
+            kernel_size=kernel_size,
+            padding=padding,
+            stride=stride,
+            bias=True
+        )
         self.BN = nn.BatchNorm2d(out_channels)
         self.ReLU = nn.ReLU()
 
@@ -294,7 +301,14 @@ class UNet_UpBlock(nn.Module):
 
         # Doing what's in the original paper: Upsample the feature map and then a 2x2 conv (and another upsample to match feature sizes)
         self.UpSample = nn.Upsample(size=up_size, mode='bilinear')
-        self.Conv2 = nn.Conv2d(in_channels=in_channels, out_channels=out_channels, kernel_size=(2, 2), stride=1, padding=0)
+        self.Conv2 = nn.Conv2d(
+            int(in_channels),
+            int(out_channels),
+            kernel_size=(2, 2),
+            padding=0,
+            stride=1,
+            bias=True
+        )
         self.UpSample2 = nn.Upsample(size=up_size, mode='bilinear')
         self.Block1 = UNet_ConvBlock(in_channels, out_channels, kernel_size=(3, 3), stride=1, padding=0)
         self.Block2 = UNet_ConvBlock(out_channels, out_channels, kernel_size=(3, 3), stride=1, padding=0)
