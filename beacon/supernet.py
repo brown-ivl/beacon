@@ -173,7 +173,7 @@ class SuperNet(nn.Module):
         self.LossHistory = []
         self.ValLossHistory = []
         self.SeparateLossesHistory = []
-        self.Optimizer = optim.Adam(self.parameters(), lr=self.Config.Args.learning_rate, weight_decay=1e-5)  # PARAM
+        self.Optimizer = None
 
     def loadCheckpoint(self, Path=None, Device='cpu'):
         if Path is None:
@@ -198,7 +198,8 @@ class SuperNet(nn.Module):
             if self.Config.Args.expt_name == LatestCheckpointDict['Name']:
                 self.load_state_dict(LatestCheckpointDict['ModelStateDict'])
                 self.StartEpoch = LatestCheckpointDict['Epoch']
-                self.Optimizer.load_state_dict(LatestCheckpointDict['OptimizerStateDict'])
+                if self.Optimizer is not None:
+                    self.Optimizer.load_state_dict(LatestCheckpointDict['OptimizerStateDict'])
                 self.LossHistory = LatestCheckpointDict['LossHistory']
                 if 'ValLossHistory' in LatestCheckpointDict:
                     self.ValLossHistory = LatestCheckpointDict['ValLossHistory']
@@ -244,6 +245,8 @@ class SuperNet(nn.Module):
         return ValLosses
 
     def fit(self, TrainDataLoader, Optimizer=None, Objective=nn.MSELoss(), TrainDevice='cpu', ValDataLoader=None):
+        if self.Optimizer is None:
+            optim.Adam(self.parameters(), lr=self.Config.Args.learning_rate, weight_decay=1e-5)  # PARAM
         if Optimizer is not None:
             self.Optimizer = Optimizer
 
