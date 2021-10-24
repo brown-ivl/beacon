@@ -173,6 +173,7 @@ class SuperNet(nn.Module):
         self.LossHistory = []
         self.ValLossHistory = []
         self.SeparateLossesHistory = []
+        self.Optimizer = optim.Adam(self.parameters(), lr=self.Config.Args.learning_rate, weight_decay=1e-5)  # PARAM
 
     def loadCheckpoint(self, Path=None, Device='cpu'):
         if Path is None:
@@ -243,10 +244,7 @@ class SuperNet(nn.Module):
         return ValLosses
 
     def fit(self, TrainDataLoader, Optimizer=None, Objective=nn.MSELoss(), TrainDevice='cpu', ValDataLoader=None):
-        if Optimizer is None:
-            # Optimizer = optim.SGD(NN.parameters(), lr=Args.learning_rate)  # , momentum=0.9)
-            self.Optimizer = optim.Adam(self.parameters(), lr=self.Config.Args.learning_rate, weight_decay=1e-5) # PARAM
-        else:
+        if Optimizer is not None:
             self.Optimizer = Optimizer
 
         ObjectiveFunc = Objective
