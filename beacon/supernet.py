@@ -211,7 +211,7 @@ class SuperNet(nn.Module):
                     self.SeparateLossesHistory = self.LossHistory
 
                 # Move optimizer state to GPU if needed. See https://github.com/pytorch/pytorch/issues/2830
-                if TrainDevice != 'cpu':
+                if TrainDevice != 'cpu' and self.Optimizer is not None:
                     for state in self.Optimizer.state.values():
                         for k, v in state.items():
                             if isinstance(v, torch.Tensor):
