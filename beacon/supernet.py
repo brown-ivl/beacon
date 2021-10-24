@@ -246,7 +246,7 @@ class SuperNet(nn.Module):
 
     def fit(self, TrainDataLoader, Optimizer=None, Objective=nn.MSELoss(), TrainDevice='cpu', ValDataLoader=None):
         if self.Optimizer is None:
-            optim.Adam(self.parameters(), lr=self.Config.Args.learning_rate, weight_decay=1e-5)  # PARAM
+            self.Optimizer = optim.Adam(self.parameters(), lr=self.Config.Args.learning_rate, weight_decay=1e-5)  # PARAM
         if Optimizer is not None:
             self.Optimizer = Optimizer
 
