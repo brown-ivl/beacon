@@ -100,8 +100,7 @@ class SuperNetExptConfig():
         self.Parser.add_argument('--rel-output-dir',
                             help='Provide the *relative* (pwd or config file) output directory where checkpoints, logs, and other output will be stored (under expt_name).')
         # -----
-        self.Parser.add_argument('--epochs', help='Choose number of epochs.', choices=range(1, 10000), metavar='1..10000',
-                            required=False, default=10, type=int)
+        self.Parser.add_argument('--epochs', help='Choose number of epochs.', required=False, default=10, type=int)
         self.Parser.add_argument('--save-freq', help='Choose epoch frequency to save checkpoints. Zero (0) will only at the end of training [not recommended].', choices=range(0, 10000), metavar='0..10000',
                             required=False, default=5, type=int)
 
