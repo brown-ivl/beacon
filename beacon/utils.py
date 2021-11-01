@@ -326,14 +326,13 @@ def setupGPUs(RequestedGPUList=None, maxLoad=0.1, maxMemory=0.1):
     return DeviceList, MainGPUID
 
 def sendToDevice(TupleOrTensor, Device):
-    TupleOrTensorTD = TupleOrTensor
-    if isinstance(TupleOrTensorTD, tuple) == False and isinstance(TupleOrTensorTD, list) == False:
-        TupleOrTensorTD = TupleOrTensor.to(Device)
+    if isinstance(TupleOrTensor, torch.Tensor):
+        TupleOrTensorD = TupleOrTensor.to(Device)
     else:
+        TupleOrTensorD = [None]*len(TupleOrTensor)
         for Ctr in range(len(TupleOrTensor)):
-            if isinstance(TupleOrTensor[Ctr], torch.Tensor):
-                TupleOrTensorTD[Ctr] = TupleOrTensor[Ctr].to(Device)
-            else:
-                TupleOrTensorTD[Ctr] = TupleOrTensor[Ctr]
+            TupleOrTensorD[Ctr] = sendToDevice(TupleOrTensor[Ctr], Device)
+        if isinstance(TupleOrTensor, tuple):
+            TupleOrTensorD = tuple(TupleOrTensorD)
 
-    return TupleOrTensorTD
+    return TupleOrTensorD
